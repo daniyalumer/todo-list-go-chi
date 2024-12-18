@@ -1,7 +1,7 @@
 package todo
 
 type User struct {
-	ID    int    `json:"ID"`
+	ID    int    `json:"id"`
 	Todos []Todo `json:"todos"`
 }
 

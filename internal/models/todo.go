@@ -7,11 +7,11 @@ import (
 type Todo struct {
 	ID            int       `json:"id"`
 	Description   string    `json:"description"`
-	DateCreated   time.Time `json:"dateCreated"`
-	DateUpdated   time.Time `json:"dateUpdated"`
-	DateCompleted time.Time `json:"dateCompleted"`
+	DateCreated   time.Time `json:"date_created"`
+	DateUpdated   time.Time `json:"date_updated"`
+	DateCompleted time.Time `json:"date_completed"`
 	Completed     bool      `json:"completed"`
-	UserID        int       `json:"userId"`
+	UserID        int       `json:"user_id"`
 }
 
 var TodoList []Todo
