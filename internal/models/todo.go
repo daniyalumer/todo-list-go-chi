@@ -2,13 +2,7 @@ package todo
 
 import (
 	"time"
-
-	"github.com/go-chi/chi/v5"
 )
-
-func NewRouter() chi.Router {
-	return TodoRoutes() 
-}
 
 type Todo struct {
 	ID            int       `json:"id"`
@@ -17,7 +11,8 @@ type Todo struct {
 	DateUpdated   time.Time `json:"dateUpdated"`
 	DateCompleted time.Time `json:"dateCompleted"`
 	Completed     bool      `json:"completed"`
+	UserID        int       `json:"userId"`
 }
 
-var todoList []Todo
-var nextID = 1
+var TodoList []Todo
+var TodoID = 1

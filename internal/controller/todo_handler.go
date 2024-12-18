@@ -2,10 +2,11 @@ package todo
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
+	models "github.com/daniyalumer/todo-list-go-chi/internal/models"
+	service "github.com/daniyalumer/todo-list-go-chi/internal/service"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -21,12 +22,12 @@ func TodoRoutes() chi.Router {
 }
 
 func GetTodosHandler(w http.ResponseWriter, r *http.Request) {
-	message, todos := ReadTodoList()
+	message, todos := service.ReadTodoList()
 	w.Header().Set("Content-Type", "application/json")
 
 	response := struct {
-		Message string `json:"message"`
-		Todos   []Todo `json:"todos"`
+		Message string        `json:"message"`
+		Todos   []models.Todo `json:"todos"`
 	}{
 		Message: message,
 		Todos:   todos,
@@ -41,13 +42,20 @@ func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	todoDescription := r.FormValue("description")
+	userIDStr := r.FormValue("userId")
 
-	message, todo := CreateTodo(todoDescription)
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	message, todo := service.CreateTodo(todoDescription, userID)
 	w.Header().Set("Content-Type", "application/json")
 
 	response := struct {
-		Message string `json:"message"`
-		ToDo    Todo   `json:"todo"`
+		Message string      `json:"message"`
+		ToDo    models.Todo `json:"todo"`
 	}{
 		Message: message,
 		ToDo:    todo,
@@ -71,12 +79,12 @@ func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message, todo := UpdateTodo(Id, Completed, todoDescription)
+	message, todo := service.UpdateTodo(Id, Completed, todoDescription)
 	w.Header().Set("Content-Type", "application/json")
 
 	response := struct {
-		Message string `json:"message"`
-		ToDo    Todo   `json:"todo"`
+		Message string      `json:"message"`
+		ToDo    models.Todo `json:"todo"`
 	}{
 		Message: message,
 		ToDo:    todo,
@@ -90,19 +98,19 @@ func DeleteTodoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	IdStr := r.FormValue("id")
-	
+
 	Id, err := strconv.Atoi(IdStr)
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
-	message, todo := DeleteTodo(Id)
+	message, todo := service.DeleteTodo(Id)
 	w.Header().Set("Content-Type", "application/json")
 
 	response := struct {
-		Message string `json:"message"`
-		ToDo    Todo   `json:"todo"`
+		Message string      `json:"message"`
+		ToDo    models.Todo `json:"todo"`
 	}{
 		Message: message,
 		ToDo:    todo,
