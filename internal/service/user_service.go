@@ -11,6 +11,7 @@ func CreateUser() (string, models.User) {
 		ID:    models.TodoID,
 		Todos: []models.Todo{},
 	}
+	models.TodoID++
 	models.UserList = append(models.UserList, newUser)
 	return "User Added Successfully", newUser
 }
