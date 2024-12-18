@@ -21,7 +21,7 @@ func main() {
 	r.Mount("/todo", todoRoutes)
 
 	userRoutes := controller.UserRoutes()
-	r.Mount("/todo", userRoutes)
+	r.Mount("/user", userRoutes)
 
 	log.Println("Starting server on :3000")
 	if err := http.ListenAndServe(":3000", r); err != nil {
