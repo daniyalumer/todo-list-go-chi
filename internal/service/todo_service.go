@@ -9,10 +9,22 @@ import (
 )
 
 func CreateTodo(description string, userid int) (string, models.Todo) {
+
+	log.Printf("Creating Todo with description: %s for user ID: %d", description, userid)
+
+	userExists := false
 	for _, User := range models.UserList {
-		if User.ID != userid {
-			return "User Does Not Exist", models.Todo{}
+		log.Printf("user ID: %d", User.ID)
+		if User.ID == userid {
+			userExists = true
+			break
 		}
+	}
+
+	if !userExists {
+		log.Printf("User.ID: %d userid: %d", userid, userid)
+		log.Println("User Does Not Exist")
+		return "User Does Not Exist", models.Todo{}
 	}
 
 	newTodo := models.Todo{
@@ -25,7 +37,7 @@ func CreateTodo(description string, userid int) (string, models.Todo) {
 	}
 	models.TodoID++
 	models.TodoList = append(models.TodoList, newTodo)
-	models.UserList[userid].Todos = append(models.UserList[userid].Todos, newTodo)
+	models.UserList[userid-1].Todos = append(models.UserList[userid-1].Todos, newTodo)
 	return "Todo Created Successfully", newTodo
 }
 
@@ -89,7 +101,7 @@ func DeleteTodo(id int) (string, models.Todo) {
 			for index1, User := range models.UserList {
 				for index2, Todo := range User.Todos {
 					if Todo.ID == id {
-						models.UserList[index1].Todos = append(models.UserList[index].Todos[:index2], models.UserList[index].Todos[index2+1:]...)
+						models.UserList[index1].Todos = append(models.UserList[index1].Todos[:index2], models.UserList[index1].Todos[index2+1:]...)
 						log.Printf("User Todos Id: %d And Description: %v Removed Successfully From User Todos", Todo.ID, Todo.Description)
 					}
 				}

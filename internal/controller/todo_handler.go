@@ -2,6 +2,7 @@ package todo
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -49,6 +50,7 @@ func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
+	log.Printf("UserID: %d", userID)
 
 	message, todo := service.CreateTodo(todoDescription, userID)
 	w.Header().Set("Content-Type", "application/json")

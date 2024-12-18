@@ -8,10 +8,10 @@ import (
 
 func CreateUser() (string, models.User) {
 	newUser := models.User{
-		ID:    models.TodoID,
+		ID:    models.UserId,
 		Todos: []models.Todo{},
 	}
-	models.TodoID++
+	models.UserId++
 	models.UserList = append(models.UserList, newUser)
 	return "User Added Successfully", newUser
 }
