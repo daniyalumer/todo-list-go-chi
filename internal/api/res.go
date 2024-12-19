@@ -1,9 +1,8 @@
-package helper
+package api
 
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
 func ResponseWriter(w http.ResponseWriter, payload interface{}, statusCode uint) error {
@@ -22,20 +21,4 @@ func ResponseWriter(w http.ResponseWriter, payload interface{}, statusCode uint)
 	}
 
 	return nil
-}
-
-func ParseForm(w http.ResponseWriter, r *http.Request) bool {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
-		return false
-	}
-	return true
-}
-
-func ConvertIdToInteger(IdStr string) (int, error) {
-	Id, err := strconv.Atoi(IdStr)
-	if err != nil {
-		return 0, err
-	}
-	return Id, nil
 }

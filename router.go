@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/daniyalumer/todo-list-go-chi/internal/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -13,14 +11,22 @@ func GetRouter() chi.Router {
 
 	r.Use(middleware.Logger)
 
-	todoRoutes := handler.TodoRoutes()
-	r.Mount("/todo", todoRoutes)
+	r.Get("/", handler.Home)
 
-	userRoutes := handler.UserRoutes()
-	r.Mount("/user", userRoutes)
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/todo", func(r chi.Router) {
+			r.Get("/", handler.GetTodos)
+			r.Post("/", handler.CreateTodo)
+			r.Put("/", handler.UpdateTodo)
+			r.Delete("/", handler.DeleteTodo)
+		})
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Todo app!"))
+		r.Route("/user", func(r chi.Router) {
+			r.Get("/", handler.GetUser)
+			r.Post("/", handler.CreateUser)
+			r.Delete("/", handler.DeleteUser)
+		})
 	})
+
 	return r
 }
