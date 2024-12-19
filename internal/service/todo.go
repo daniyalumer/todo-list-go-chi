@@ -1,20 +1,17 @@
-package todo
+package service
 
 import (
 	"fmt"
 	"log"
 	"time"
 
-	models "github.com/daniyalumer/todo-list-go-chi/internal/models"
+	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateTodo(description string, userid int) (string, models.Todo) {
-
-	log.Printf("Creating Todo with description: %s for user ID: %d", description, userid)
+func CreateTodo(description string, userid int) (models.Todo, error) {
 
 	userExists := false
 	for _, User := range models.UserList {
-		log.Printf("user ID: %d", User.ID)
 		if User.ID == userid {
 			userExists = true
 			break
@@ -22,9 +19,7 @@ func CreateTodo(description string, userid int) (string, models.Todo) {
 	}
 
 	if !userExists {
-		log.Printf("User.ID: %d userid: %d", userid, userid)
-		log.Println("User Does Not Exist")
-		return "User Does Not Exist", models.Todo{}
+		return models.Todo{}, fmt.Errorf("provided user does not exist")
 	}
 
 	newTodo := models.Todo{
@@ -38,17 +33,19 @@ func CreateTodo(description string, userid int) (string, models.Todo) {
 	models.TodoID++
 	models.TodoList = append(models.TodoList, newTodo)
 	models.UserList[userid-1].Todos = append(models.UserList[userid-1].Todos, newTodo)
-	return "Todo Created Successfully", newTodo
+	return newTodo, nil
 }
 
-func ReadTodoList() (string, []models.Todo) {
-	return "TodoList Read Successfully", models.TodoList
+func ReadTodoList() ([]models.Todo, error) {
+	if len(models.TodoList) == 0 {
+		return nil, fmt.Errorf("user list empty")
+	}
+	return models.TodoList, nil
 }
 
-func UpdateTodo(id int, completed bool, description string) (string, models.Todo) {
+func UpdateTodo(id int, completed bool, description string) (models.Todo, error) {
 	if description != "" {
 		for index, todoItem := range models.TodoList {
-			fmt.Println(todoItem.ID)
 			if todoItem.ID == id {
 				currentTime := time.Now()
 				models.TodoList[index].Description = description
@@ -62,10 +59,10 @@ func UpdateTodo(id int, completed bool, description string) (string, models.Todo
 						}
 					}
 				}
-				return "Todo Item Updated Successfully In TodoList", models.TodoList[index]
+				return models.TodoList[index], nil
 			}
 		}
-		return "Item Not Found To Update Description", models.Todo{}
+		return models.Todo{}, fmt.Errorf("item not found to update description")
 	}
 
 	if completed {
@@ -73,7 +70,7 @@ func UpdateTodo(id int, completed bool, description string) (string, models.Todo
 			fmt.Println(todoItem.ID)
 			if todoItem.ID == id {
 				if models.TodoList[index].Completed {
-					return "Todo Item Already Marked Compleded", models.TodoList[index]
+					return models.TodoList[index], fmt.Errorf("todo item already marked completed")
 				}
 				currentTime := time.Now()
 				models.TodoList[index].Completed = completed
@@ -87,14 +84,14 @@ func UpdateTodo(id int, completed bool, description string) (string, models.Todo
 						}
 					}
 				}
-				return "Todo Item Marked Completed Successfully", models.TodoList[index]
+				return models.TodoList[index], nil
 			}
 		}
 	}
-	return "Item Not Found To Mark Completed", models.Todo{}
+	return models.Todo{}, fmt.Errorf("todo item not found to mark completed")
 }
 
-func DeleteTodo(id int) (string, models.Todo) {
+func DeleteTodo(id int) (models.Todo, error) {
 	for index, todoItem := range models.TodoList {
 		if todoItem.ID == id {
 			models.TodoList = append(models.TodoList[:index], models.TodoList[index+1:]...)
@@ -106,8 +103,8 @@ func DeleteTodo(id int) (string, models.Todo) {
 					}
 				}
 			}
-			return "Item Deleted Successfully From TodoList", todoItem
+			return todoItem, nil
 		}
 	}
-	return "Item Not Found", models.Todo{}
+	return models.Todo{}, fmt.Errorf("todo item not found to delete")
 }

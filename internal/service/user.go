@@ -1,26 +1,30 @@
-package todo
+package service
 
 import (
+	"fmt"
 	"log"
 
-	models "github.com/daniyalumer/todo-list-go-chi/internal/models"
+	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateUser() (string, models.User) {
+func CreateUser() (models.User, error) {
 	newUser := models.User{
 		ID:    models.UserId,
 		Todos: []models.Todo{},
 	}
 	models.UserId++
 	models.UserList = append(models.UserList, newUser)
-	return "User Added Successfully", newUser
+	return newUser, nil
 }
 
-func ReadUsers() (string, []models.User) {
-	return "User Read Successfully", models.UserList
+func ReadUsers() ([]models.User, error) {
+	if len(models.TodoList) == 0 {
+		return nil, fmt.Errorf("user list empty")
+	}
+	return models.UserList, nil
 }
 
-func DeleteUser(userid int) (string, models.User) {
+func DeleteUser(userid int) (models.User, error) {
 	for index, User := range models.UserList {
 		if User.ID == userid {
 			models.UserList = append(models.UserList[:index], models.UserList[index+1:]...)
@@ -30,8 +34,8 @@ func DeleteUser(userid int) (string, models.User) {
 					log.Printf("User Items Id: %d And Description: %v Removed Successfully", Todo.ID, Todo.Description)
 				}
 			}
-			return "User Deleted Successfully", User
+			return User, nil
 		}
 	}
-	return "User Not Found", models.User{}
+	return models.User{}, fmt.Errorf("user not found to delete")
 }
