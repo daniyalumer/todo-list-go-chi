@@ -1,11 +1,9 @@
-package controller
+package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/daniyalumer/todo-list-go-chi/internal/helper"
-	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 	"github.com/daniyalumer/todo-list-go-chi/internal/service"
 	"github.com/go-chi/chi/v5"
 )
@@ -24,10 +22,10 @@ func TodoRoutes() chi.Router {
 func GetTodosHandler(w http.ResponseWriter, r *http.Request) {
 	todos, err := service.ReadTodoList()
 	if err != nil {
-		helper.TodoListResponseWriter(w, "failed to read todo list", []models.Todo{}, http.StatusBadRequest)
+		helper.ResponseWriter(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	helper.TodoListResponseWriter(w, "todo list read successfully", todos, http.StatusAccepted)
+	helper.ResponseWriter(w, todos, http.StatusOK)
 }
 
 func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,11 +33,11 @@ func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todoDescription := r.FormValue("description")
-	userIDStr := r.URL.Query().Get("userId")
+	todoDescription := r.Form.Get("description")
 
+	useridstr := r.URL.Query().Get("userId")
 
-	userID, err := strconv.Atoi(userIDStr)
+	userID, err := helper.ConvertIdToInteger(useridstr)
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
@@ -47,10 +45,10 @@ func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := service.CreateTodo(todoDescription, userID)
 	if err != nil {
-		helper.TodoResponseWriter(w, "failed to create todo item", models.Todo{}, http.StatusBadRequest)
+		helper.ResponseWriter(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	helper.TodoResponseWriter(w, "created todo item successfully", todo, http.StatusAccepted)
+	helper.ResponseWriter(w, todo, http.StatusOK)
 }
 
 func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,12 +56,13 @@ func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todoDescription := r.FormValue("description")
-	completedStr := r.FormValue("completed")
+	todoDescription := r.Form.Get("description")
+	completedStr := r.Form.Get("completed")
+
 	Completed := completedStr == "true"
 
-	IdStr := r.URL.Query().Get("id")
-	Id, err := strconv.Atoi(IdStr)
+	idstr := r.URL.Query().Get("id")
+	Id, err := helper.ConvertIdToInteger(idstr)
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
@@ -71,10 +70,10 @@ func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := service.UpdateTodo(Id, Completed, todoDescription)
 	if err != nil {
-		helper.TodoResponseWriter(w, "failed to update todo item", models.Todo{}, http.StatusBadRequest)
+		helper.ResponseWriter(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	helper.TodoResponseWriter(w, "updated todo item successfully", todo, http.StatusAccepted)
+	helper.ResponseWriter(w, todo, http.StatusOK)
 }
 
 func DeleteTodoHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,9 +81,9 @@ func DeleteTodoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	IdStr := r.URL.Query().Get("id")
+	idstr := r.URL.Query().Get("id")
 
-	Id, err := strconv.Atoi(IdStr)
+	Id, err := helper.ConvertIdToInteger(idstr)
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
@@ -92,8 +91,8 @@ func DeleteTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := service.DeleteTodo(Id)
 	if err != nil {
-		helper.TodoResponseWriter(w, "failed to deleted todo item", models.Todo{}, http.StatusBadRequest)
+		helper.ResponseWriter(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	helper.TodoResponseWriter(w, "successfully deleted todo item", todo, http.StatusAccepted)
+	helper.ResponseWriter(w, todo, http.StatusOK)
 }

@@ -7,14 +7,14 @@ import (
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateUser() (models.User, error) {
+func CreateUser() (models.User, int, error) {
 	newUser := models.User{
 		ID:    models.UserId,
 		Todos: []models.Todo{},
 	}
 	models.UserId++
 	models.UserList = append(models.UserList, newUser)
-	return newUser, nil
+	return newUser, newUser.ID, nil
 }
 
 func ReadUsers() ([]models.User, error) {

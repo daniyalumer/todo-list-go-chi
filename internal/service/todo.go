@@ -44,6 +44,10 @@ func ReadTodoList() ([]models.Todo, error) {
 }
 
 func UpdateTodo(id int, completed bool, description string) (models.Todo, error) {
+	if (description == "" && !completed) || (description != "" && completed) {
+		return models.Todo{}, fmt.Errorf("provide either description or completed")
+	}
+
 	if description != "" {
 		for index, todoItem := range models.TodoList {
 			if todoItem.ID == id {
