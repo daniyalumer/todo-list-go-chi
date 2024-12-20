@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-func ResponseWriter(w http.ResponseWriter, payload interface{}, statusCode uint) error {
+func ParseResponse(w http.ResponseWriter, payload interface{}, status uint) error {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(int(statusCode))
+	w.WriteHeader(int(status))
 
 	if payload == nil {
 		return nil

@@ -7,5 +7,5 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	api.ResponseWriter(w, "Welcome to Todo app!", http.StatusOK)
+	api.ParseResponse(w, "Welcome to Todo app!", http.StatusOK)
 }

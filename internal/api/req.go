@@ -1,23 +1,16 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func ParseForm(w http.ResponseWriter, r *http.Request) bool {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
-		return false
-	}
-	return true
-}
-
-func ParseURLParameter(r *http.Request, key string) (string, error) {
-	val := r.URL.Query().Get(key)
-	if val == "" {
-		return "", fmt.Errorf("missing parameter %s", key)
+func ParseRequest(r *http.Request, req interface{}) error {
+	err := json.NewDecoder(r.Body).Decode(req)
+	if err != nil {
+		return fmt.Errorf("unable to parse request: %v", err)
 	}
 
-	return val, nil
+	return nil
 }

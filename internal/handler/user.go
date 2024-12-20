@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/daniyalumer/todo-list-go-chi/internal/api"
 	"github.com/daniyalumer/todo-list-go-chi/internal/service"
@@ -11,39 +12,41 @@ import (
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	users, err := service.ReadUsers()
 	if err != nil {
-		api.ResponseWriter(w, err.Error(), http.StatusBadRequest)
+		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	api.ResponseWriter(w, users, http.StatusOK)
+
+	api.ParseResponse(w, users, http.StatusOK)
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_, id, err := service.CreateUser()
 	if err != nil {
-		api.ResponseWriter(w, err.Error(), http.StatusBadRequest)
+		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	api.ResponseWriter(w, fmt.Sprintf("successfully deleted user with id: %d", id), http.StatusOK)
+
+	api.ParseResponse(w, fmt.Sprintf("successfully deleted user with id: %d", id), http.StatusOK)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	if !api.ParseForm(w, r) {
-		return
-	}
-
-	idstr := r.URL.Query().Get("id")
-
-	id, err := api.ParseURLParameter(idstr)
+	id, err := api.ParseURLParameter(r, "id")
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = service.DeleteUser(id)
+	userID, err := strconv.Atoi(id)
 	if err != nil {
-		api.ResponseWriter(w, err.Error(), http.StatusBadRequest)
+		api.ParseResponse(w, fmt.Errorf("unable to process"), http.StatusInternalServerError)
 		return
 	}
 
-	api.ResponseWriter(w, fmt.Sprintf("successfully deleted user with id: %d", id), http.StatusOK)
+	_, err = service.DeleteUser(userID)
+	if err != nil {
+		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	api.ParseResponse(w, fmt.Sprintf("successfully deleted user with id: %d", userID), http.StatusOK)
 }
