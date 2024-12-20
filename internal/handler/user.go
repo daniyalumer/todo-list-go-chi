@@ -26,7 +26,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.ParseResponse(w, fmt.Sprintf("successfully deleted user with id: %d", id), http.StatusOK)
+	api.ParseResponse(w, fmt.Sprintf("successfully created user with id: %d", id), http.StatusOK)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {

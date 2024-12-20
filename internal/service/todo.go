@@ -8,7 +8,8 @@ import (
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateTodo(description string, userid int) (models.Todo, error) {
+func CreateTodo(userid int, body map[string]interface{}) (models.Todo, error) {
+	description := body["description"].(string)
 
 	userExists := false
 	for _, User := range models.UserList {
@@ -43,7 +44,10 @@ func ReadTodoList() ([]models.Todo, error) {
 	return models.TodoList, nil
 }
 
-func UpdateTodo(id int, completed bool, description string) (models.Todo, error) {
+func UpdateTodo(id int, body map[string]interface{}) (models.Todo, error) {
+	description := body["description"].(string)
+	completed := body["completed"].(bool)
+
 	if (description == "" && !completed) || (description != "" && completed) {
 		return models.Todo{}, fmt.Errorf("provide either description or completed")
 	}

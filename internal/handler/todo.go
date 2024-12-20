@@ -20,7 +20,11 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
-	todoDescription := r.Form.Get("description")
+	var body map[string]interface{}
+	err := api.ParseRequest(r, &body)
+	if err != nil {
+		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
+	}
 
 	id, err := api.ParseURLParameter(r, "userId")
 	if err != nil {
@@ -34,7 +38,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.CreateTodo(todoDescription, userID)
+	todo, err := service.CreateTodo(userID, body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -44,10 +48,11 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
-	todoDescription := r.Form.Get("description")
-	completedStr := r.Form.Get("completed")
-
-	Completed := completedStr == "true"
+	var body map[string]interface{}
+	err := api.ParseRequest(r, &body)
+	if err != nil {
+		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
+	}
 
 	id, err := api.ParseURLParameter(r, "id")
 	if err != nil {
@@ -61,7 +66,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.UpdateTodo(todoID, Completed, todoDescription)
+	todo, err := service.UpdateTodo(todoID, body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
