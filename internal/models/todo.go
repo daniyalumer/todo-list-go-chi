@@ -16,3 +16,12 @@ type Todo struct {
 
 var TodoList []Todo
 var TodoID = 1
+
+type TodoCreateRequest struct {
+	Description string `json:"description"`
+}
+
+type TodoUpdateRequest struct {
+	Description string `json:"description"`
+	Completed   bool   `json:"completed"`
+}
