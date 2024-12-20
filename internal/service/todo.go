@@ -5,10 +5,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateTodo(userid int, body models.TodoCreateRequest) (models.Todo, error) {
+func CreateTodo(userid int, body rq.TodoCreate) (models.Todo, error) {
 	description := body.Description
 
 	userExists := false
@@ -44,7 +45,7 @@ func ReadTodoList() ([]models.Todo, error) {
 	return models.TodoList, nil
 }
 
-func UpdateTodo(id int, body models.TodoUpdateRequest) (models.Todo, error) {
+func UpdateTodo(id int, body rq.TodoUpdate) (models.Todo, error) {
 	description := body.Description
 	completed := body.Completed
 

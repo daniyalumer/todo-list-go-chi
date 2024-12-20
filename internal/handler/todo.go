@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/daniyalumer/todo-list-go-chi/internal/api"
-	"github.com/daniyalumer/todo-list-go-chi/internal/models"
+	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/service"
 )
 
@@ -21,7 +21,7 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
-	var body models.TodoCreateRequest
+	var body rq.TodoCreate
 	err := api.ParseRequest(r, &body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
@@ -49,7 +49,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
-	var body models.TodoUpdateRequest
+	var body rq.TodoUpdate
 	err := api.ParseRequest(r, &body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
