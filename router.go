@@ -16,15 +16,15 @@ func GetRouter() chi.Router {
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/todo", func(r chi.Router) {
 			r.Get("/", handler.GetTodos)
-			r.Post("/", handler.CreateTodo)
-			r.Put("/", handler.UpdateTodo)
-			r.Delete("/", handler.DeleteTodo)
+			r.Post("/{userid}", handler.CreateTodo)
+			r.Put("/{id}", handler.UpdateTodo)
+			r.Delete("/{id}", handler.DeleteTodo)
 		})
 
 		r.Route("/user", func(r chi.Router) {
 			r.Get("/", handler.GetUser)
 			r.Post("/", handler.CreateUser)
-			r.Delete("/", handler.DeleteUser)
+			r.Delete("/{userid}", handler.DeleteUser)
 		})
 	})
 

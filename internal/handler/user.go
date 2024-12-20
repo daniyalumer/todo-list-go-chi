@@ -30,7 +30,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id, err := api.ParseURLParameter(r, "id")
+	id, err := api.ParseURLParameter(r, "userid")
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return

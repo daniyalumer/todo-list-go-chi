@@ -26,7 +26,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	id, err := api.ParseURLParameter(r, "userId")
+	id, err := api.ParseURLParameter(r, "userid")
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
