@@ -20,13 +20,13 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	_, id, err := service.CreateUser()
+	user, err := service.CreateUser()
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	api.ParseResponse(w, fmt.Sprintf("successfully created user with id: %d", id), http.StatusOK)
+	api.ParseResponse(w, fmt.Sprintf("successfully created user with id: %d", user.ID), http.StatusOK)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {

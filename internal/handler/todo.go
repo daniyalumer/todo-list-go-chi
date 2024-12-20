@@ -26,7 +26,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	id, err := api.ParseURLParameter(r, "userid")
+	id, err := api.ParseURLParameter(r, "user_id")
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
@@ -54,7 +54,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	id, err := api.ParseURLParameter(r, "id")
+	id, err := api.ParseURLParameter(r, "todo_id")
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
@@ -76,7 +76,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	id, err := api.ParseURLParameter(r, "id")
+	id, err := api.ParseURLParameter(r, "todo_id")
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
