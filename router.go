@@ -11,12 +11,12 @@ func GetRouter() chi.Router {
 
 	r.Use(middleware.Logger)
 
-	r.Get("/", handler.Home)
-
 	r.Route("/api", func(r chi.Router) {
+		r.Get("/home", handler.Home)
+
 		r.Route("/todo", func(r chi.Router) {
 			r.Get("/", handler.GetTodos)
-			r.Post("/{user_id}", handler.CreateTodo)
+			r.Post("/user/{user_id}", handler.CreateTodo)
 			r.Put("/{todo_id}", handler.UpdateTodo)
 			r.Delete("/{todo_id}", handler.DeleteTodo)
 		})
