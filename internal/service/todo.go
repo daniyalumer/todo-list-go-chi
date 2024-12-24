@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
+	repository "github.com/daniyalumer/todo-list-go-chi/internal/repo"
 )
 
-func CreateTodo(userid uint, body rq.TodoCreate) (models.Todo, error) {
+func CreateTodo(userID uint, body rq.TodoCreate) (models.Todo, error) {
 	var user models.User
 
-	if err := db.DB.First(&user, userid).Error; err != nil {
+	if err := repository.CheckDeleted(user, userID); err != nil {
 		return models.Todo{}, fmt.Errorf("failed to find user: %v", err)
 	}
 
@@ -20,28 +20,28 @@ func CreateTodo(userid uint, body rq.TodoCreate) (models.Todo, error) {
 		Description: body.Description,
 		CompletedAt: nil,
 		Completed:   false,
-		UserID:      userid,
+		UserID:      userID,
 	}
-	result := db.DB.Create(&newTodo)
-	if result.Error != nil {
-		return models.Todo{}, fmt.Errorf("failed to create todo: %v", result.Error)
+	err := repository.Create(&newTodo)
+	if err != nil {
+		return models.Todo{}, fmt.Errorf("failed to create todo: %v", err)
 	}
 	return newTodo, nil
 }
 
 func ReadTodoList() ([]models.Todo, error) {
 	var todos []models.Todo
-	results := db.DB.Find(&todos)
-	if results.Error != nil {
-		return nil, fmt.Errorf("failed to fetch todos: %v", results.Error)
+	err := repository.FindAll(&todos)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch todos: %v", err)
 	}
 	return todos, nil
 }
 
 func UpdateTodo(todoID uint, body rq.TodoUpdate) (models.Todo, error) {
 	var todo models.Todo
-	if result := db.DB.First(&todo, todoID); result.Error != nil {
-		return models.Todo{}, fmt.Errorf("todo not found: %v", result.Error)
+	if err := repository.FindById(&todo, todoID); err != nil {
+		return models.Todo{}, fmt.Errorf("todo not found: %v", err)
 	}
 	updates := map[string]interface{}{}
 	if body.Description != "" {
@@ -53,7 +53,7 @@ func UpdateTodo(todoID uint, body rq.TodoUpdate) (models.Todo, error) {
 		updates["completed_at"] = time.Now()
 	}
 
-	if err := db.DB.Model(&todo).Updates(updates).Error; err != nil {
+	if err := repository.Update(&todo, updates); err != nil {
 		return models.Todo{}, fmt.Errorf("failed to update todo: %v", err)
 	}
 
@@ -63,14 +63,15 @@ func UpdateTodo(todoID uint, body rq.TodoUpdate) (models.Todo, error) {
 func DeleteTodo(todoID uint) (models.Todo, error) {
 	var todo models.Todo
 
-	results := db.DB.First(&todo, todoID)
-	if results.Error != nil {
-		return models.Todo{}, fmt.Errorf("failed to find todo: %v", results.Error)
+	err := repository.FindById(&todo, todoID)
+	if err != nil {
+		return models.Todo{}, fmt.Errorf("failed to find todo: %v", err)
 	}
 
-	results = db.DB.Delete(&todo)
-	if results.Error != nil {
-		return models.Todo{}, fmt.Errorf("failed to delete todo: %v", results.Error)
+	err = repository.Delete(&todo)
+	if err != nil {
+		return models.Todo{}, fmt.Errorf("failed to delete todo: %v", err)
 	}
+
 	return todo, nil
 }

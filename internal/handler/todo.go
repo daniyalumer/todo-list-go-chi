@@ -45,7 +45,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.ParseResponse(w, todo, http.StatusOK)
+	api.ParseResponse(w, fmt.Sprintf("successfully created todo with id: %d", todo.ID), http.StatusOK)
 }
 
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +73,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.ParseResponse(w, todo, http.StatusOK)
+	api.ParseResponse(w, fmt.Sprintf("successfully updated todo with id: %d", todo.ID), http.StatusOK)
 }
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
@@ -95,5 +95,5 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.ParseResponse(w, todo, http.StatusOK)
+	api.ParseResponse(w, fmt.Sprintf("successfully deleted todo with id: %d", todo.ID), http.StatusOK)
 }
