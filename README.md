@@ -1,6 +1,6 @@
 # Todo List API
 
-A simple Todo List application built with Go using the Chi router. This project provides a RESTful API for managing todos, allowing users to create, read, update, and delete todo items.
+A simple Todo List application built with Go using the Chi router, Postgres, GORM and Golang Migrate. This project provides a RESTful API for managing todos, allowing users to create, read, update, and delete todo items.
 
 ## Features
 
@@ -15,6 +15,9 @@ A simple Todo List application built with Go using the Chi router. This project 
 - Go (version 1.21.3)
 - Chi (v5.2.0) for routing
 - JSON for data interchange
+- Golang-migrate for migrations
+- Postgres for database
+- GORM for object relational mapping 
 
 ## Getting Started
 
@@ -48,7 +51,11 @@ A simple Todo List application built with Go using the Chi router. This project 
 To start the server, run the following command:
 
 ```bash
-go run cmd/todo-service/main.go
+go run .
+```
+Or
+```bash
+go run github.com/daniyalumer/todo-list-go-chi
 ```
 
 The server will start on `http://localhost:3000`.
