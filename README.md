@@ -62,42 +62,62 @@ The server will start on `http://localhost:3000`.
 
 ### API Endpoints
 
-- **GET /todo/get**: Retrieve all todos
-- **POST /todo/post**: Create a new todo
+- **GET api/home/**: Print Welcome Message     
+&nbsp;
+- **GET api/todo/**: Retrieve all todos
+- **POST api/todo/{user_id}**: Create a new todo
   - Body: `description=<todo_description>`
-- **PUT /todo/put**: Update an existing todo
-  - Body: `id=<todo_id>&description=<new_description>&completed=<true|false>`
-- **DELETE /todo/delete**: Delete a todo
-  - Body: `id=<todo_id>`
+- **PUT api/todo/{todo_id}**: Update an existing todo
+  - Body: `description=<new_description>&completed=<true|false>`
+- **DELETE api/todo/{user_id}**: Delete a todo
+&nbsp;
+- **GET api/user/**: Retrieve all users
+- **POST api/user/**: Create a new users
+  - Body: `username=<username>`
+- **DELETE api/user/{user_id}**: Delete a user and his todos   
 
 ### Example Requests
 
-1. **Create a Todo**
+1. **Create a User**
 
    ```bash
-   curl -X POST http://localhost:3000/todo/post -d "description=Buy groceries"
+   curl -X POST http://localhost:3000/api/user/ -d "username=xyz"
    ```
 
-2. **Get Todos**
+2. **Get User**
 
    ```bash
-   curl http://localhost:3000/todo/get
+   curl http://localhost:3000/api/user/
    ```
 
-3. **Update a Todo**
+3. **Delete a User**
 
    ```bash
-   curl -X PUT http://localhost:3000/todo/put -d "id=1&description=Buy groceries and cook dinner&completed=true"
-   ```
-   
-   ```bash
-   http://localhost:3000/todo/put?id=2&completed=true
+   curl -X DELETE http://localhost:3000/api/user/{user}  
    ```
 
-4. **Delete a Todo**
+4. **Create a Todo**
 
    ```bash
-   curl -X DELETE http://localhost:3000/todo/delete -d "id=1"
+   curl -X POST http://localhost:3000/api/todo/{user_id} -d "description=Buy groceries"
+   ```
+
+5. **Get Todos**
+
+   ```bash
+   curl http://localhost:3000/api/todo/
+   ```
+
+6. **Update a Todo**
+
+   ```bash
+   curl -X PUT http://localhost:3000/api/todo/{todo_id} -d "description=Buy groceries and cook dinner&completed=true"
+   ```
+
+7. **Delete a Todo**
+
+   ```bash
+   curl -X DELETE http://localhost:3000/api/todo/delete/{todo_id}  
    ```
 
 ## Contributing
@@ -106,4 +126,4 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is Open Source
