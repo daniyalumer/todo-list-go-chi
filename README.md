@@ -53,7 +53,7 @@ To start the server, run the following command:
 ```bash
 go run .
 ```
-Or
+or
 ```bash
 go run github.com/daniyalumer/todo-list-go-chi
 ```
