@@ -1,9 +1,9 @@
 package models
 
-type User struct {
-	ID    int    `json:"id"`
-	Todos []Todo `json:"todos"`
-}
+import "gorm.io/gorm"
 
-var UserList []User
-var UserId = 1
+type User struct {
+	gorm.Model
+	Username string `json:"username" gorm:"unique;not null"`
+	Todos    []Todo `json:"todos" gorm:"foreignKey:UserID"`
+}

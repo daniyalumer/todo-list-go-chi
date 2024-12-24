@@ -2,18 +2,14 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Todo struct {
-	ID            int       `json:"id"`
-	Description   string    `json:"description"`
-	DateCreated   time.Time `json:"date_created"`
-	DateUpdated   time.Time `json:"date_updated"`
-	DateCompleted time.Time `json:"date_completed"`
-	Completed     bool      `json:"completed"`
-	UserID        int       `json:"user_id"`
+	gorm.Model
+	Description string     `json:"description" gorm:"not null"`
+	CompletedAt *time.Time `json:"completed_at" gorm:"default:null"`
+	Completed   bool       `json:"completed" gorm:"default:false"`
+	UserID      uint       `json:"user_id" gorm:"not null"`
 }
-
-var TodoList []Todo
-var TodoID = 1
-

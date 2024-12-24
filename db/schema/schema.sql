@@ -1,0 +1,21 @@
+BEGIN;
+CREATE TABLE "users" (
+    "id" SERIAL PRIMARY KEY,
+    "username" VARCHAR(255) NOT NULL,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP DEFAULT NULL
+);
+
+CREATE TABLE "todos" (
+    "id" SERIAL PRIMARY KEY,
+    "description" VARCHAR(255) NOT NULL,
+    "completed" BOOLEAN DEFAULT FALSE,
+    "user_id" INT NOT NULL,
+    "completed_at" TIMESTAMP DEFAULT NULL,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user"(id)
+);
+COMMIT;

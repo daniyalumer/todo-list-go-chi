@@ -2,42 +2,54 @@ package service
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/daniyalumer/todo-list-go-chi/db"
+	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateUser() (models.User, error) {
-	newUser := models.User{
-		ID:    models.UserId,
-		Todos: []models.Todo{},
+func CreateUser(body rq.UserCreate) (models.User, error) {
+	user := models.User{
+		Username: body.Username,
 	}
-	models.UserId++
-	models.UserList = append(models.UserList, newUser)
-	return newUser, nil
+	result := db.DB.Create(&user)
+	if result.Error != nil {
+		return models.User{}, fmt.Errorf("failed to create user: %v", result.Error)
+	}
+	return user, nil
 }
 
 func ReadUsers() ([]models.User, error) {
-	if len(models.UserList) == 0 {
-		return nil, fmt.Errorf("user list empty")
+	var users []models.User
+	result := db.DB.Preload("Todos").Find(&users)
+	if result.Error != nil {
+		return []models.User{}, fmt.Errorf("failed to read users: %v", result.Error)
 	}
-	return models.UserList, nil
+	return users, nil
 }
 
-func DeleteUser(userid int) (models.User, error) {
-	for index, User := range models.UserList {
-		if User.ID == userid {
-			models.UserList = append(models.UserList[:index], models.UserList[index+1:]...)
-			var remainingTodos []models.Todo
-			for _, Todo := range models.TodoList {
-				if Todo.UserID != userid {
-					remainingTodos = append(remainingTodos, Todo)
-				}
-				log.Printf("User Items Id: %d And Description: %v Removed Successfully", Todo.ID, Todo.Description)
-			}
-			models.TodoList = remainingTodos
-			return User, nil
-		}
+func DeleteUser(userID uint) (models.User, error) {
+	tx := db.DB.Begin()
+
+	var user models.User
+	if err := tx.Preload("Todos").First(&user, userID).Error; err != nil {
+		tx.Rollback()
+		return models.User{}, fmt.Errorf("failed to find user: %v", err)
 	}
-	return models.User{}, fmt.Errorf("user not found to delete")
+
+	if err := tx.Where("user_id = ?", userID).Delete(&models.Todo{}).Error; err != nil {
+		tx.Rollback()
+		return models.User{}, fmt.Errorf("failed to delete user's todos: %v", err)
+	}
+
+	if err := tx.Delete(&user).Error; err != nil {
+		tx.Rollback()
+		return models.User{}, fmt.Errorf("failed to delete user: %v", err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return models.User{}, fmt.Errorf("failed to commit transaction: %v", err)
+	}
+	return user, nil
 }

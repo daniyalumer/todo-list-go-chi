@@ -22,7 +22,7 @@ func GetRouter() chi.Router {
 		})
 
 		r.Route("/user", func(r chi.Router) {
-			r.Get("/", handler.GetUser)
+			r.Get("/", handler.GetUsers)
 			r.Post("/", handler.CreateUser)
 			r.Delete("/{user_id}", handler.DeleteUser)
 		})

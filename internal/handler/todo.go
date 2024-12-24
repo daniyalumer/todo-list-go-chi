@@ -39,7 +39,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.CreateTodo(userID, body)
+	todo, err := service.CreateTodo(uint(userID), body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -67,7 +67,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.UpdateTodo(todoID, body)
+	todo, err := service.UpdateTodo(uint(todoID), body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -89,7 +89,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.DeleteTodo(todoID)
+	todo, err := service.DeleteTodo(uint(todoID))
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -2,118 +2,75 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"time"
 
+	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/models"
 )
 
-func CreateTodo(userid int, body rq.TodoCreate) (models.Todo, error) {
-	description := body.Description
+func CreateTodo(userid uint, body rq.TodoCreate) (models.Todo, error) {
+	var user models.User
 
-	userExists := false
-	for _, User := range models.UserList {
-		if User.ID == userid {
-			userExists = true
-			break
-		}
-	}
-
-	if !userExists {
-		return models.Todo{}, fmt.Errorf("provided user does not exist")
+	if err := db.DB.First(&user, userid).Error; err != nil {
+		return models.Todo{}, fmt.Errorf("failed to find user: %v", err)
 	}
 
 	newTodo := models.Todo{
-		ID:          models.TodoID,
-		Description: description,
-		DateCreated: time.Now(),
-		DateUpdated: time.Time{},
+		Description: body.Description,
+		CompletedAt: nil,
 		Completed:   false,
 		UserID:      userid,
 	}
-	models.TodoID++
-	models.TodoList = append(models.TodoList, newTodo)
-	models.UserList[userid-1].Todos = append(models.UserList[userid-1].Todos, newTodo)
+	result := db.DB.Create(&newTodo)
+	if result.Error != nil {
+		return models.Todo{}, fmt.Errorf("failed to create todo: %v", result.Error)
+	}
 	return newTodo, nil
 }
 
 func ReadTodoList() ([]models.Todo, error) {
-	if len(models.TodoList) == 0 {
-		return nil, fmt.Errorf("user list empty")
+	var todos []models.Todo
+	results := db.DB.Find(&todos)
+	if results.Error != nil {
+		return nil, fmt.Errorf("failed to fetch todos: %v", results.Error)
 	}
-	return models.TodoList, nil
+	return todos, nil
 }
 
-func UpdateTodo(id int, body rq.TodoUpdate) (models.Todo, error) {
-	description := body.Description
-	completed := body.Completed
-
-	if (description == "" && !completed) || (description != "" && completed) {
-		return models.Todo{}, fmt.Errorf("provide either description or completed")
+func UpdateTodo(todoID uint, body rq.TodoUpdate) (models.Todo, error) {
+	var todo models.Todo
+	if result := db.DB.First(&todo, todoID); result.Error != nil {
+		return models.Todo{}, fmt.Errorf("todo not found: %v", result.Error)
+	}
+	updates := map[string]interface{}{}
+	if body.Description != "" {
+		updates["description"] = body.Description
 	}
 
-	if description != "" {
-		for index, todoItem := range models.TodoList {
-			if todoItem.ID == id {
-				currentTime := time.Now()
-				models.TodoList[index].Description = description
-				models.TodoList[index].DateUpdated = currentTime
-				for index1, User := range models.UserList {
-					for index2, Todo := range User.Todos {
-						if Todo.ID == id {
-							models.UserList[index1].Todos[index2].Description = description
-							models.UserList[index1].Todos[index2].DateUpdated = currentTime
-							log.Printf("Description: %v Updated Successfully In User Todos For Todo Id: %d", Todo.Description, Todo.ID)
-						}
-					}
-				}
-				return models.TodoList[index], nil
-			}
-		}
-		return models.Todo{}, fmt.Errorf("item not found to update description")
+	if body.Completed {
+		updates["completed"] = body.Completed
+		updates["completed_at"] = time.Now()
 	}
 
-	if completed {
-		for index, todoItem := range models.TodoList {
-			fmt.Println(todoItem.ID)
-			if todoItem.ID == id {
-				if models.TodoList[index].Completed {
-					return models.TodoList[index], fmt.Errorf("todo item already marked completed")
-				}
-				currentTime := time.Now()
-				models.TodoList[index].Completed = completed
-				models.TodoList[index].DateUpdated = currentTime
-				for index1, User := range models.UserList {
-					for index2, Todo := range User.Todos {
-						if Todo.ID == id {
-							models.UserList[index1].Todos[index2].Completed = completed
-							models.UserList[index1].Todos[index2].DateUpdated = currentTime
-							log.Printf("Description: %v Updated Successfully In User Todos For Todo Id: %d", Todo.Description, Todo.ID)
-						}
-					}
-				}
-				return models.TodoList[index], nil
-			}
-		}
+	if err := db.DB.Model(&todo).Updates(updates).Error; err != nil {
+		return models.Todo{}, fmt.Errorf("failed to update todo: %v", err)
 	}
-	return models.Todo{}, fmt.Errorf("todo item not found to mark completed")
+
+	return todo, nil
 }
 
-func DeleteTodo(id int) (models.Todo, error) {
-	for index, todoItem := range models.TodoList {
-		if todoItem.ID == id {
-			models.TodoList = append(models.TodoList[:index], models.TodoList[index+1:]...)
-			for index1, User := range models.UserList {
-				for index2, Todo := range User.Todos {
-					if Todo.ID == id {
-						models.UserList[index1].Todos = append(models.UserList[index1].Todos[:index2], models.UserList[index1].Todos[index2+1:]...)
-						log.Printf("User Todos Id: %d And Description: %v Removed Successfully From User Todos", Todo.ID, Todo.Description)
-					}
-				}
-			}
-			return todoItem, nil
-		}
+func DeleteTodo(todoID uint) (models.Todo, error) {
+	var todo models.Todo
+
+	results := db.DB.First(&todo, todoID)
+	if results.Error != nil {
+		return models.Todo{}, fmt.Errorf("failed to find todo: %v", results.Error)
 	}
-	return models.Todo{}, fmt.Errorf("todo item not found to delete")
+
+	results = db.DB.Delete(&todo)
+	if results.Error != nil {
+		return models.Todo{}, fmt.Errorf("failed to delete todo: %v", results.Error)
+	}
+	return todo, nil
 }

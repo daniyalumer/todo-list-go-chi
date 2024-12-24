@@ -6,10 +6,11 @@ import (
 	"strconv"
 
 	"github.com/daniyalumer/todo-list-go-chi/internal/api"
+	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
 	"github.com/daniyalumer/todo-list-go-chi/internal/service"
 )
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := service.ReadUsers()
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
@@ -20,7 +21,13 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	user, err := service.CreateUser()
+	var body rq.UserCreate
+	err := api.ParseRequest(r, &body)
+	if err != nil {
+		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	user, err := service.CreateUser(body)
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
@@ -42,7 +49,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = service.DeleteUser(userID)
+	_, err = service.DeleteUser(uint(userID))
 	if err != nil {
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
 		return
