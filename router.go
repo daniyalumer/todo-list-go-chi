@@ -1,9 +1,11 @@
 package main
 
 import (
+	_ "github.com/daniyalumer/todo-list-go-chi/docs"
 	"github.com/daniyalumer/todo-list-go-chi/internal/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func GetRouter() chi.Router {
@@ -26,6 +28,8 @@ func GetRouter() chi.Router {
 			r.Post("/", handler.CreateUser)
 			r.Delete("/{user_id}", handler.DeleteUser)
 		})
+
+		r.Get("/swagger/*", httpSwagger.WrapHandler)
 	})
 
 	return r

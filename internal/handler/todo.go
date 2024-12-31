@@ -12,6 +12,15 @@ import (
 	"github.com/daniyalumer/todo-list-go-chi/internal/service"
 )
 
+// GetTodos godoc
+// @Summary Get all todos
+// @Description Get all todos
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} rq.Todo
+// @Failure 400 {string} string "Bad Request"
+// @Router /api/todo [get]
 func GetTodos(w http.ResponseWriter, r *http.Request) {
 	todos, err := service.ReadTodoList()
 	if err != nil {
@@ -23,6 +32,18 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 	api.ParseResponse(w, todos, http.StatusOK)
 }
 
+// CreateTodo godoc
+// @Summary Create a new todo
+// @Description Create a new todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param user_id path int true "User ID"
+// @Param todo body rq.Todo true "Todo"
+// @Success 200 {string} string "Successfully created todo"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /api/todo/user/{user_id} [post]
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var body rq.Todo
 	err := api.ParseRequest(r, &body)
@@ -56,6 +77,18 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	api.ParseResponse(w, fmt.Sprintf("successfully created todo with id: %d", todo.ID), http.StatusOK)
 }
 
+// UpdateTodo godoc
+// @Summary Update an existing todo
+// @Description Update an existing todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param todo_id path int true "Todo ID"
+// @Param todo body rq.TodoUpdate true "Todo Update"
+// @Success 200 {string} string "Successfully updated todo"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /api/todo/{todo_id} [put]
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	var body rq.TodoUpdate
 	err := api.ParseRequest(r, &body)
@@ -89,6 +122,17 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	api.ParseResponse(w, fmt.Sprintf("successfully updated todo with id: %d", todo.ID), http.StatusOK)
 }
 
+// DeleteTodo godoc
+// @Summary Delete a todo
+// @Description Delete a todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param todo_id path int true "Todo ID"
+// @Success 200 {string} string "Successfully deleted todo"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /api/todo/{todo_id} [delete]
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	id, err := api.ParseURLParameter(r, "todo_id")
 	if err != nil {
