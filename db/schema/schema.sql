@@ -1,4 +1,5 @@
 BEGIN;
+
 CREATE TABLE "users" (
     "id" SERIAL PRIMARY KEY,
     "username" VARCHAR(255) NOT NULL,
@@ -17,4 +18,5 @@ CREATE TABLE "todos" (
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP DEFAULT NULL,
 );
+
 COMMIT;

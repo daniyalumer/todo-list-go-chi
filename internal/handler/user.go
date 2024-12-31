@@ -13,14 +13,15 @@ import (
 )
 
 // GetUsers godoc
-// @Summary Get all users
-// @Description Get all users
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Success 200 {array} rq.User
-// @Failure 400 {string} string "Bad Request"
-// @Router /user [get]
+//
+//	@Summary		Get all users
+//	@Description	Get all users
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		rq.User
+//	@Failure		400	{string}	string	"Bad Request"
+//	@Router			/user [get]
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := service.ReadUsers()
 	if err != nil {
@@ -33,16 +34,17 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 // CreateUser godoc
-// @Summary Create a new user
-// @Description Create a new user
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Param user body rq.User true "User"
-// @Success 200 {string} string "Successfully created user"
-// @Failure 400 {string} string "Bad Request"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /user [post]
+//
+//	@Summary		Create a new user
+//	@Description	Create a new user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		rq.User	true	"User"
+//	@Success		200		{string}	string	"Successfully created user"
+//	@Failure		400		{string}	string	"Bad Request"
+//	@Failure		500		{string}	string	"Internal Server Error"
+//	@Router			/user [post]
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var body rq.User
 	err := api.ParseRequest(r, &body)
@@ -63,16 +65,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteUser godoc
-// @Summary Delete a user
-// @Description Delete a user
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Param user_id path int true "User ID"
-// @Success 200 {string} string "Successfully deleted user"
-// @Failure 400 {string} string "Bad Request"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /user/{user_id} [delete]
+//
+//	@Summary		Delete a user
+//	@Description	Delete a user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user_id	path		int		true	"User ID"
+//	@Success		200		{string}	string	"Successfully deleted user"
+//	@Failure		400		{string}	string	"Bad Request"
+//	@Failure		500		{string}	string	"Internal Server Error"
+//	@Router			/user/{user_id} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := api.ParseURLParameter(r, "user_id")
 	if err != nil {
