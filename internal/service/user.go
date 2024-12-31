@@ -9,7 +9,7 @@ import (
 	repository "github.com/daniyalumer/todo-list-go-chi/internal/repo"
 )
 
-func CreateUser(req rq.UserCreate) (dao.User, error) {
+func CreateUser(req rq.User) (dao.User, error) {
 	user := dao.User{
 		Username: req.Username,
 	}

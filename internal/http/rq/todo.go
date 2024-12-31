@@ -1,6 +1,6 @@
 package rq
 
-type TodoCreate struct {
+type Todo struct {
 	Description string `json:"description"`
 }
 

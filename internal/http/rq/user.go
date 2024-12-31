@@ -1,5 +1,5 @@
 package rq
 
-type UserCreate struct {
+type User struct {
 	Username string `json:"username"`
 }

@@ -5,7 +5,6 @@ import (
 	"embed"
 	"log"
 
-	"github.com/daniyalumer/todo-list-go-chi/conf"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -18,12 +17,15 @@ var sqlFiles embed.FS
 const MigrationVersion = 1
 
 func RunMigrations() {
-	db := connectDatabase()
-	defer db.Close()
+	if Db == nil {
+		if err := Connect(); err != nil {
+			log.Fatalf("failed to connect to the database: %v", err)
+		}
+	}
 
 	log.Println("Database connection established")
 
-	m := createMigrateInstance(db)
+	m := createMigrateInstance(Db)
 	log.Printf("Looking for migrations in: file://db/migrations/")
 
 	if err := m.Migrate(MigrationVersion); err != nil {
@@ -35,27 +37,7 @@ func RunMigrations() {
 	}
 
 	log.Println("Migration applied successfully!")
-}
-
-func RollbackMigrations() {
-	db := connectDatabase()
-	defer db.Close()
-
-	m := createMigrateInstance(db)
-
-	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-		log.Fatalf("failed to rollback migration: %v", err)
-	}
-
-	log.Println("Migration rolled back successfully!")
-}
-
-func connectDatabase() *sql.DB {
-	db, err := sql.Open("postgres", "host="+conf.DbHost+" port="+conf.DbPort+" user="+conf.DbUser+" dbname="+conf.DbName+" password="+conf.DbPassword+" sslmode=disable")
-	if err != nil {
-		log.Fatalf("failed to connect to the database: %v", err)
-	}
-	return db
+	defer Db.Close()
 }
 
 func createMigrateInstance(db *sql.DB) *migrate.Migrate {

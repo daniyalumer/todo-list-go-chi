@@ -10,7 +10,7 @@ CREATE TABLE "users" (
 CREATE TABLE "todos" (
     "id" SERIAL PRIMARY KEY,
     "description" VARCHAR(255) NOT NULL,
-    "completed" BOOLEAN DEFAULT FALSE,
+    "completed" BOOLEAN NOT NULL DEFAULT FALSE,
     "user_id" INT NOT NULL REFERENCES "users"(id) ON DELETE CASCADE,,
     "completed_at" TIMESTAMP DEFAULT NULL,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

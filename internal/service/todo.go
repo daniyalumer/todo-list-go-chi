@@ -9,11 +9,11 @@ import (
 	repository "github.com/daniyalumer/todo-list-go-chi/internal/repo"
 )
 
-func CreateTodo(userID uint, body rq.TodoCreate) (dao.Todo, error) {
+func CreateTodo(userID uint, body rq.Todo) (*dao.Todo, error) {
 	var user dao.User
 
 	if err := repository.CheckDeleted(&user, userID); err != nil {
-		return dao.Todo{}, fmt.Errorf("failed to find user: %v", err)
+		return &dao.Todo{}, fmt.Errorf("failed to find user: %v", err)
 	}
 
 	newTodo := dao.Todo{
@@ -24,9 +24,9 @@ func CreateTodo(userID uint, body rq.TodoCreate) (dao.Todo, error) {
 	}
 	err := repository.Create(&newTodo)
 	if err != nil {
-		return dao.Todo{}, fmt.Errorf("failed to create todo: %v", err)
+		return &dao.Todo{}, fmt.Errorf("failed to create todo: %v", err)
 	}
-	return newTodo, nil
+	return &newTodo, nil
 }
 
 func ReadTodoList() ([]dao.Todo, error) {
