@@ -16,11 +16,8 @@ var (
 	DbPassword string
 )
 
-func Setup() {
+func Setup() error {
 	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	if x := os.Getenv("HTTP_PORT"); x != "" {
 		HttpPort = x
@@ -63,4 +60,6 @@ func Setup() {
 	} else {
 		log.Println("Unable to configure DB Name, defaulting to ", DbName)
 	}
+
+	return err
 }

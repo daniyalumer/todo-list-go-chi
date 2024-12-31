@@ -11,9 +11,15 @@ import (
 )
 
 func main() {
-	conf.Setup()
+	err := conf.Setup()
+	if err != nil {
+		log.Fatalf("error loading .env file")
+	}
 
-	db.Connect()
+	err = db.Connect()
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
 
 	// Run migrations
 	db.RunMigrations()
@@ -23,6 +29,6 @@ func main() {
 
 	log.Printf("Starting server on :%v", conf.HttpPort)
 	if err := http.ListenAndServe(fmt.Sprintf(":%v", conf.HttpPort), GetRouter()); err != nil {
-		log.Fatalf("Could not start server: %s\n", err)
+		log.Fatalf("could not start server: %s\n", err)
 	}
 }

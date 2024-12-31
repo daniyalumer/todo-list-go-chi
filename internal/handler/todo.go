@@ -35,7 +35,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := strconv.Atoi(id)
 	if err != nil {
-		api.ParseResponse(w, fmt.Errorf("unable to process"), http.StatusInternalServerError)
+		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -85,7 +85,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 
 	todoID, err := strconv.Atoi(id)
 	if err != nil {
-		api.ParseResponse(w, fmt.Errorf("unable to process"), http.StatusInternalServerError)
+		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
