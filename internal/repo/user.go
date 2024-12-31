@@ -1,39 +1,30 @@
 package repository
 
 import (
-	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/db/dao"
 	"gorm.io/gorm"
 )
 
-func CreateUser(user *dao.User) error {
-	result := db.DB.Create(&user)
-	return result.Error
+func CreateUser(user *dao.User, DB *gorm.DB) error {
+	return DB.Create(&user).Error
 }
 
-func FindAllUsers(users *[]dao.User) error {
-	result := db.DB.Preload("Todos").Find(&users)
-	return result.Error
+func FindAllUsers(users *[]dao.User, DB *gorm.DB) error {
+	return DB.Preload("Todos").Find(&users).Error
 }
 
-func FindByIdUser(user *dao.User, userID uint) error {
-	result := db.DB.Preload("Todos").Find(&user, userID)
-	return result.Error
+func FindByIdUser(user *dao.User, DB *gorm.DB, userID uint) error {
+	return DB.Preload("Todos").Find(&user, userID).Error
 }
 
-func DeleteUser(tx *gorm.DB, user *dao.User) error {
-	if err := tx.Where("user_id = ?", user.ID).Delete(&dao.Todo{}).Error; err != nil {
-		return err
-	}
-
-	if err := tx.Delete(&user).Error; err != nil {
+func DeleteUser(DB *gorm.DB, user *dao.User) error {
+	if err := DB.Delete(&user).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func CheckDeleted(user *dao.User, userID uint) error {
-	result := db.DB.Where("deleted_at IS NULL").Preload("Todos").First(user, userID)
-	return result.Error
+func CheckDeleted(user *dao.User, DB *gorm.DB, userID uint) error {
+	return DB.Where("deleted_at IS NULL").Preload("Todos").First(user, userID).Error
 }

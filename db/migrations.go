@@ -17,15 +17,20 @@ var sqlFiles embed.FS
 const MigrationVersion = 1
 
 func RunMigrations() {
-	if Db == nil {
-		if err := Connect(); err != nil {
-			log.Fatalf("failed to connect to the database: %v", err)
-		}
+	Db, err := Connect()
+	if err != nil {
+		log.Fatalf("failed to connect to the database: %v", err)
 	}
+
+	DB, err := Db.DB()
+	if err != nil {
+		log.Fatalf("failed to connect to the database: %v", err)
+	}
+	defer DB.Close()
 
 	log.Println("Database connection established")
 
-	m := createMigrateInstance(Db)
+	m := createMigrateInstance(DB)
 	log.Printf("Looking for migrations in: file://db/migrations/")
 
 	if err := m.Migrate(MigrationVersion); err != nil {
@@ -37,7 +42,6 @@ func RunMigrations() {
 	}
 
 	log.Println("Migration applied successfully!")
-	defer Db.Close()
 }
 
 func createMigrateInstance(db *sql.DB) *migrate.Migrate {

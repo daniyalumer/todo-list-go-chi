@@ -7,30 +7,18 @@ import (
 
 	"github.com/daniyalumer/todo-list-go-chi/conf"
 	"github.com/daniyalumer/todo-list-go-chi/db"
+	_ "github.com/lib/pq"
 )
 
 //	@title			Todo List API
 //	@version		1.0
 //	@description	This is a sample server for a todo list application.
-//	@termsOfService	http://swagger.io/terms/
-
-//	@contact.name	API Support
-//	@contact.url	http://www.swagger.io/support
-//	@contact.email	support@swagger.io
-
-//	@license.name	Apache 2.0
-//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
-
-//	@host	localhost:3000
+//
+//	@host			localhost:3000
 func main() {
 	err := conf.Setup()
 	if err != nil {
 		log.Fatalf("error loading .env file")
-	}
-
-	err = db.Connect()
-	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
 	}
 
 	db.RunMigrations()
