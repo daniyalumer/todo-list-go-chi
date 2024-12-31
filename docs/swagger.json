@@ -16,9 +16,8 @@
         "version": "1.0"
     },
     "host": "localhost:3000",
-    "basePath": "/api",
     "paths": {
-        "/home": {
+        "/api/home": {
             "get": {
                 "description": "Welcome message for the Todo app",
                 "consumes": [
@@ -41,7 +40,7 @@
                 }
             }
         },
-        "/todo": {
+        "/api/todo": {
             "get": {
                 "description": "Get all todos",
                 "consumes": [
@@ -73,7 +72,7 @@
                 }
             }
         },
-        "/todo/user/{user_id}": {
+        "/api/todo/user/{user_id}": {
             "post": {
                 "description": "Create a new todo",
                 "consumes": [
@@ -126,7 +125,7 @@
                 }
             }
         },
-        "/todo/{todo_id}": {
+        "/api/todo/{todo_id}": {
             "put": {
                 "description": "Update an existing todo",
                 "consumes": [
@@ -221,7 +220,7 @@
                 }
             }
         },
-        "/user": {
+        "/api/user": {
             "get": {
                 "description": "Get all users",
                 "consumes": [
@@ -297,7 +296,7 @@
                 }
             }
         },
-        "/user/{user_id}": {
+        "/api/user/{user_id}": {
             "delete": {
                 "description": "Delete a user",
                 "consumes": [

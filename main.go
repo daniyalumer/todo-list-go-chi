@@ -21,8 +21,7 @@ import (
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-//	@host		localhost:3000
-//	@BasePath	/api
+//	@host	localhost:3000
 func main() {
 	err := conf.Setup()
 	if err != nil {
