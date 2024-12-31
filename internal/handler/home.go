@@ -13,7 +13,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Welcome to Todo app!"
-// @Router /api/home [get]
+// @Router /home [get]
 func Home(w http.ResponseWriter, r *http.Request) {
 	api.ParseResponse(w, "Welcome to Todo app!", http.StatusOK)
 }

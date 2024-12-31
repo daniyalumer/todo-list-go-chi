@@ -17,7 +17,7 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: localhost:3000
 info:
   contact:
     email: support@swagger.io
@@ -31,7 +31,7 @@ info:
   title: Todo List API
   version: "1.0"
 paths:
-  /api/home:
+  /home:
     get:
       consumes:
       - application/json
@@ -46,7 +46,7 @@ paths:
       summary: Home endpoint
       tags:
       - home
-  /api/todo:
+  /todo:
     get:
       consumes:
       - application/json
@@ -67,7 +67,7 @@ paths:
       summary: Get all todos
       tags:
       - todos
-  /api/todo/{todo_id}:
+  /todo/{todo_id}:
     delete:
       consumes:
       - application/json
@@ -130,7 +130,7 @@ paths:
       summary: Update an existing todo
       tags:
       - todos
-  /api/todo/user/{user_id}:
+  /todo/user/{user_id}:
     post:
       consumes:
       - application/json
@@ -165,7 +165,7 @@ paths:
       summary: Create a new todo
       tags:
       - todos
-  /api/user:
+  /user:
     get:
       consumes:
       - application/json
@@ -215,7 +215,7 @@ paths:
       summary: Create a new user
       tags:
       - users
-  /api/user/{user_id}:
+  /user/{user_id}:
     delete:
       consumes:
       - application/json

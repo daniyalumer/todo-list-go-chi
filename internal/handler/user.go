@@ -20,7 +20,7 @@ import (
 // @Produce  json
 // @Success 200 {array} rq.User
 // @Failure 400 {string} string "Bad Request"
-// @Router /api/user [get]
+// @Router /user [get]
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := service.ReadUsers()
 	if err != nil {
@@ -42,7 +42,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {string} string "Successfully created user"
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /api/user [post]
+// @Router /user [post]
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var body rq.User
 	err := api.ParseRequest(r, &body)
@@ -72,7 +72,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {string} string "Successfully deleted user"
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /api/user/{user_id} [delete]
+// @Router /user/{user_id} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := api.ParseURLParameter(r, "user_id")
 	if err != nil {

@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/home": {
+        "/home": {
             "get": {
                 "description": "Welcome message for the Todo app",
                 "consumes": [
@@ -47,7 +47,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/todo": {
+        "/todo": {
             "get": {
                 "description": "Get all todos",
                 "consumes": [
@@ -79,7 +79,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/todo/user/{user_id}": {
+        "/todo/user/{user_id}": {
             "post": {
                 "description": "Create a new todo",
                 "consumes": [
@@ -132,7 +132,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/todo/{todo_id}": {
+        "/todo/{todo_id}": {
             "put": {
                 "description": "Update an existing todo",
                 "consumes": [
@@ -227,7 +227,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/user": {
+        "/user": {
             "get": {
                 "description": "Get all users",
                 "consumes": [
@@ -303,7 +303,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/user/{user_id}": {
+        "/user/{user_id}": {
             "delete": {
                 "description": "Delete a user",
                 "consumes": [
@@ -382,7 +382,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:3000",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Todo List API",
