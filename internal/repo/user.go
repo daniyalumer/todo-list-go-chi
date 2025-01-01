@@ -1,39 +1,41 @@
 package repo
 
 import (
+	"context"
+
 	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/db/dao"
 )
 
-func CreateUser(user *dao.User) error {
+func CreateUser(ctx context.Context, user *dao.User) error {
 	DB := db.GetConnection()
-	return DB.Create(&user).Error
+	return DB.WithContext(ctx).Create(&user).Error
 }
 
-func FindAllUsers(users *[]dao.User) error {
+func FindAllUsers(ctx context.Context, users *[]dao.User) error {
 	DB := db.GetConnection()
-	return DB.Preload("Todos").Find(&users).Error
+	return DB.WithContext(ctx).Preload("Todos").Find(&users).Error
 }
 
-func FindByIdUser(user *dao.User, userID uint) error {
+func FindByIdUser(ctx context.Context, user *dao.User, userID uint) error {
 	DB := db.GetConnection()
-	return DB.Preload("Todos").Find(&user, userID).Error
+	return DB.WithContext(ctx).Preload("Todos").Find(&user, userID).Error
 }
 
-func DeleteUser(user *dao.User) error {
+func DeleteUser(ctx context.Context, user *dao.User) error {
 	DB := db.GetConnection()
-	if err := DB.Where("user_id = ?", user.ID).Delete(&dao.Todo{}).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("user_id = ?", user.ID).Delete(&dao.Todo{}).Error; err != nil {
 		return err
 	}
 
-	if err := DB.Delete(&user).Error; err != nil {
+	if err := DB.WithContext(ctx).Delete(&user).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func CheckDeleted(user *dao.User, userID uint) error {
+func CheckDeleted(ctx context.Context, user *dao.User, userID uint) error {
 	DB := db.GetConnection()
-	return DB.Where("deleted_at IS NULL").Preload("Todos").First(user, userID).Error
+	return DB.WithContext(ctx).Where("deleted_at IS NULL").Preload("Todos").First(user, userID).Error
 }

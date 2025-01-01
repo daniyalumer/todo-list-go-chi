@@ -23,7 +23,11 @@ import (
 //	@Failure		400	{string}	string	"Bad Request"
 //	@Router			/api/todo [get]
 func GetTodos(w http.ResponseWriter, r *http.Request) {
-	todos, err := service.ReadTodoList()
+	ctx := r.Context()
+
+	log.Printf("Context: %v\n", ctx)
+
+	todos, err := service.ReadTodoList(ctx)
 	if err != nil {
 		log.Printf("error reading todo list: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
@@ -48,6 +52,9 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 //	@Router			/api/todo/user/{user_id} [post]
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var body rq.Todo
+
+	ctx := r.Context()
+
 	err := api.ParseRequest(r, &body)
 	if err != nil {
 		log.Printf("error parsing request: %v", err)
@@ -69,7 +76,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.CreateTodo(uint(userID), body)
+	todo, err := service.CreateTodo(ctx, uint(userID), body)
 	if err != nil {
 		log.Printf("error creating todo: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
@@ -94,6 +101,9 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 //	@Router			/api/todo/{todo_id} [put]
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	var body rq.TodoUpdate
+
+	ctx := r.Context()
+
 	err := api.ParseRequest(r, &body)
 	if err != nil {
 		log.Printf("error parsing request: %v", err)
@@ -115,7 +125,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.UpdateTodo(uint(todoID), body)
+	todo, err := service.UpdateTodo(ctx, uint(todoID), body)
 	if err != nil {
 		log.Printf("error updating todo: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)
@@ -138,6 +148,8 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 //	@Failure		500		{string}	string	"Internal Server Error"
 //	@Router			/api/todo/{todo_id} [delete]
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	id, err := api.ParseURLParameter(r, "todo_id")
 	if err != nil {
 		log.Printf("error parsing URL parameter: %v", err)
@@ -152,7 +164,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, err := service.DeleteTodo(uint(todoID))
+	todo, err := service.DeleteTodo(ctx, uint(todoID))
 	if err != nil {
 		log.Printf("error deleting todo: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusInternalServerError)

@@ -23,7 +23,9 @@ import (
 //	@Failure		400	{string}	string	"Bad Request"
 //	@Router			/api/user [get]
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := service.ReadUsers()
+	ctx := r.Context()
+
+	users, err := service.ReadUsers(ctx)
 	if err != nil {
 		log.Printf("Error reading users: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
@@ -47,6 +49,9 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 //	@Router			/api/user [post]
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var body rq.User
+
+	ctx := r.Context()
+
 	err := api.ParseRequest(r, &body)
 	if err != nil {
 		log.Printf("Error parsing request: %v", err)
@@ -54,7 +59,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := service.CreateUser(body)
+	user, err := service.CreateUser(ctx, body)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)
@@ -77,6 +82,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 //	@Failure		500		{string}	string	"Internal Server Error"
 //	@Router			/api/user/{user_id} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	id, err := api.ParseURLParameter(r, "user_id")
 	if err != nil {
 		log.Printf("Error parsing URL parameter: %v", err)
@@ -91,7 +98,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = service.DeleteUser(uint(userID))
+	_, err = service.DeleteUser(ctx, uint(userID))
 	if err != nil {
 		log.Printf("Error deleting user: %v", err)
 		api.ParseResponse(w, err.Error(), http.StatusBadRequest)

@@ -1,31 +1,33 @@
 package repo
 
 import (
+	"context"
+
 	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/db/dao"
 )
 
-func Create(todo *dao.Todo) error {
+func Create(ctx context.Context, todo *dao.Todo) error {
 	DB := db.GetConnection()
-	return DB.Create(&todo).Error
+	return DB.WithContext(ctx).Create(&todo).Error
 }
 
-func FindAll(todos *[]dao.Todo) error {
+func FindAll(ctx context.Context, todos *[]dao.Todo) error {
 	DB := db.GetConnection()
-	return DB.Find(todos).Error
+	return DB.WithContext(ctx).Find(todos).Error
 }
 
-func FindById(todo *dao.Todo, todoID uint) error {
+func FindById(ctx context.Context, todo *dao.Todo, todoID uint) error {
 	DB := db.GetConnection()
-	return DB.First(&todo, todoID).Error
+	return DB.WithContext(ctx).First(&todo, todoID).Error
 }
 
-func Update(todo *dao.Todo, updates interface{}) error {
+func Update(ctx context.Context, todo *dao.Todo, updates interface{}) error {
 	DB := db.GetConnection()
-	return DB.Model(&todo).Updates(updates).Error
+	return DB.WithContext(ctx).Model(&todo).Updates(updates).Error
 }
 
-func Delete(todo *dao.Todo) error {
+func Delete(ctx context.Context, todo *dao.Todo) error {
 	DB := db.GetConnection()
-	return DB.Delete(&todo).Error
+	return DB.WithContext(ctx).Delete(&todo).Error
 }
