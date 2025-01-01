@@ -18,20 +18,20 @@ import (
 func main() {
 	err := conf.Setup()
 	if err != nil {
-		log.Fatalf("error loading .env file")
+		log.Panic("error loading .env file")
 	}
 
 	err = db.Connect()
 	if err != nil {
-		log.Panic("could not connect to database: %s\n", err)
+		log.Panicf("could not connect to database: %s\n", err)
 	}
 	defer func() {
 		sqlDB, err := db.GetConnection().DB()
 		if err != nil {
-			log.Printf("failed to get database connection: %v", err)
+			log.Panicf("failed to get database connection: %v", err)
 		}
 		if err := sqlDB.Close(); err != nil {
-			log.Printf("failed to close database connection: %v", err)
+			log.Panicf("failed to close database connection: %v", err)
 		}
 	}()
 

@@ -21,7 +21,7 @@ func RunMigrations() {
 
 	DB, err := Db.DB()
 	if err != nil {
-		log.Fatalf("failed to access underlying database connection: %v", err)
+		log.Panicf("failed to access underlying database connection: %v", err)
 	}
 	// defer DB.Close()
 
@@ -46,7 +46,7 @@ func DownMigrations() {
 
 	DB, err := Db.DB()
 	if err != nil {
-		log.Fatalf("failed to access underlying database connection: %v", err)
+		log.Panicf("failed to access underlying database connection: %v", err)
 	}
 	// defer DB.Close()
 
@@ -65,17 +65,17 @@ func DownMigrations() {
 func createMigrateInstance(db *sql.DB) *migrate.Migrate {
 	dirInstance, err := iofs.New(sqlFiles, "migrations")
 	if err != nil {
-		log.Fatalf("failed to create directory instance: %v", err)
+		log.Panicf("failed to create directory instance: %v", err)
 	}
 
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		log.Fatalf("failed to create driver: %v", err)
+		log.Panicf("failed to create driver: %v", err)
 	}
 
 	m, err := migrate.NewWithInstance("iofs", dirInstance, "postgres", driver)
 	if err != nil {
-		log.Fatalf("failed to create migrate instance: %v", err)
+		log.Panicf("failed to create migrate instance: %v", err)
 	}
 	return m
 }
