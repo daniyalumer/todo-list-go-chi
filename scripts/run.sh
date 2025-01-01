@@ -1,6 +1,6 @@
-swag init --parseInternal
-
 swag fmt
+
+swag init --parseInternal
 
 go build -o bin/main 
 

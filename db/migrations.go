@@ -17,16 +17,13 @@ var sqlFiles embed.FS
 const MigrationVersion = 1
 
 func RunMigrations() {
-	Db, err := Connect()
-	if err != nil {
-		log.Fatalf("failed to connect to the database: %v", err)
-	}
+	Db := GetConnection()
 
 	DB, err := Db.DB()
 	if err != nil {
-		log.Fatalf("failed to connect to the database: %v", err)
+		log.Fatalf("failed to access underlying database connection: %v", err)
 	}
-	defer DB.Close()
+	// defer DB.Close()
 
 	log.Println("Database connection established")
 
@@ -42,6 +39,27 @@ func RunMigrations() {
 	}
 
 	log.Println("Migration applied successfully!")
+}
+
+func DownMigrations() {
+	Db := GetConnection()
+
+	DB, err := Db.DB()
+	if err != nil {
+		log.Fatalf("failed to access underlying database connection: %v", err)
+	}
+	// defer DB.Close()
+
+	log.Println("Database connection established")
+
+	m := createMigrateInstance(DB)
+	log.Printf("Looking for migrations in: file://db/migrations/")
+
+	if err := m.Down(); err != nil {
+		log.Fatalf("failed to run migration: %v", err)
+	}
+
+	log.Println("Migration rolled back successfully!")
 }
 
 func createMigrateInstance(db *sql.DB) *migrate.Migrate {

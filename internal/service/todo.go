@@ -7,18 +7,15 @@ import (
 	"github.com/daniyalumer/todo-list-go-chi/db"
 	"github.com/daniyalumer/todo-list-go-chi/db/dao"
 	"github.com/daniyalumer/todo-list-go-chi/internal/http/rq"
-	repository "github.com/daniyalumer/todo-list-go-chi/internal/repo"
+	repo "github.com/daniyalumer/todo-list-go-chi/internal/repo"
 )
 
 func CreateTodo(userID uint, body rq.Todo) (*dao.Todo, error) {
 	var user dao.User
 
-	DB, err := db.Connect()
-	if err != nil {
-		return &dao.Todo{}, fmt.Errorf("failed to connect to database: %v", err)
-	}
+	DB := db.GetConnection()
 
-	if err := repository.CheckDeleted(&user, DB, userID); err != nil {
+	if err := repo.FindByIdUser(&user, DB, userID); err != nil {
 		return &dao.Todo{}, fmt.Errorf("failed to find user: %v", err)
 	}
 
@@ -28,7 +25,7 @@ func CreateTodo(userID uint, body rq.Todo) (*dao.Todo, error) {
 		Completed:   false,
 		UserID:      userID,
 	}
-	err = repository.Create(&newTodo, DB)
+	err := repo.Create(&newTodo, DB)
 	if err != nil {
 		return &dao.Todo{}, fmt.Errorf("failed to create todo: %v", err)
 	}
@@ -38,12 +35,9 @@ func CreateTodo(userID uint, body rq.Todo) (*dao.Todo, error) {
 func ReadTodoList() ([]dao.Todo, error) {
 	var todos []dao.Todo
 
-	DB, err := db.Connect()
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
+	DB := db.GetConnection()
 
-	err = repository.FindAll(&todos, DB)
+	err := repo.FindAll(&todos, DB)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch todos: %v", err)
 	}
@@ -53,12 +47,9 @@ func ReadTodoList() ([]dao.Todo, error) {
 func UpdateTodo(todoID uint, body rq.TodoUpdate) (dao.Todo, error) {
 	var todo dao.Todo
 
-	DB, err := db.Connect()
-	if err != nil {
-		return dao.Todo{}, fmt.Errorf("failed to connect to database: %v", err)
-	}
+	DB := db.GetConnection()
 
-	if err := repository.FindById(&todo, DB, todoID); err != nil {
+	if err := repo.FindById(&todo, DB, todoID); err != nil {
 		return dao.Todo{}, fmt.Errorf("todo not found: %v", err)
 	}
 	updates := map[string]interface{}{}
@@ -71,7 +62,7 @@ func UpdateTodo(todoID uint, body rq.TodoUpdate) (dao.Todo, error) {
 		updates["completed_at"] = time.Now()
 	}
 
-	if err := repository.Update(&todo, DB, updates); err != nil {
+	if err := repo.Update(&todo, DB, updates); err != nil {
 		return dao.Todo{}, fmt.Errorf("failed to update todo: %v", err)
 	}
 
@@ -81,17 +72,14 @@ func UpdateTodo(todoID uint, body rq.TodoUpdate) (dao.Todo, error) {
 func DeleteTodo(todoID uint) (dao.Todo, error) {
 	var todo dao.Todo
 
-	DB, err := db.Connect()
-	if err != nil {
-		return dao.Todo{}, fmt.Errorf("failed to connect to database: %v", err)
-	}
+	DB := db.GetConnection()
 
-	err = repository.FindById(&todo, DB, todoID)
+	err := repo.FindById(&todo, DB, todoID)
 	if err != nil {
 		return dao.Todo{}, fmt.Errorf("failed to find todo: %v", err)
 	}
 
-	err = repository.Delete(&todo, DB)
+	err = repo.Delete(&todo, DB)
 	if err != nil {
 		return dao.Todo{}, fmt.Errorf("failed to delete todo: %v", err)
 	}

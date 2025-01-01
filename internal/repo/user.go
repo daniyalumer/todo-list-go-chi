@@ -1,4 +1,4 @@
-package repository
+package repo
 
 import (
 	"github.com/daniyalumer/todo-list-go-chi/db/dao"
