@@ -31,6 +31,16 @@ func Connect() error {
 	return err
 }
 
+func CloseConnection() {
+	sqlDB, err := GetConnection().DB()
+	if err != nil {
+		log.Panicf("failed to get database connection: %v", err)
+	}
+	if err := sqlDB.Close(); err != nil {
+		log.Panicf("failed to close database connection: %v", err)
+	}
+}
+
 func GetConnection() *gorm.DB {
 	return conn
 }

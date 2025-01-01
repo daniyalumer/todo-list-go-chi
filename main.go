@@ -18,22 +18,14 @@ import (
 func main() {
 	err := conf.Setup()
 	if err != nil {
-		log.Panic("error loading .env file")
+		log.Fatal("error loading .env file")
 	}
 
 	err = db.Connect()
 	if err != nil {
-		log.Panicf("could not connect to database: %s\n", err)
+		log.Fatalf("could not connect to database: %s\n", err)
 	}
-	defer func() {
-		sqlDB, err := db.GetConnection().DB()
-		if err != nil {
-			log.Panicf("failed to get database connection: %v", err)
-		}
-		if err := sqlDB.Close(); err != nil {
-			log.Panicf("failed to close database connection: %v", err)
-		}
-	}()
+	defer db.CloseConnection()
 
 	db.RunMigrations()
 	//db.DownMigrations()

@@ -44,7 +44,7 @@ func RunMigrations() {
 func DownMigrations() {
 	Db := GetConnection()
 
-	DB, err := Db.DB()
+	db, err := Db.DB()
 	if err != nil {
 		log.Panicf("failed to access underlying database connection: %v", err)
 	}
@@ -52,7 +52,7 @@ func DownMigrations() {
 
 	log.Println("Database connection established")
 
-	m := createMigrateInstance(DB)
+	m := createMigrateInstance(db)
 	log.Printf("Looking for migrations in: file://db/migrations/")
 
 	if err := m.Down(); err != nil {
