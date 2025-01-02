@@ -11,7 +11,7 @@ import (
 
 var conn *gorm.DB
 
-func Connect() error {
+func Setup() error {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		conf.DbHost,
 		conf.DbPort,
@@ -31,8 +31,8 @@ func Connect() error {
 	return err
 }
 
-func CloseConnection() {
-	sqlDB, err := GetConnection().DB()
+func Close() {
+	sqlDB, err := Conn().DB()
 	if err != nil {
 		log.Panicf("failed to get database connection: %v", err)
 	}
@@ -41,6 +41,6 @@ func CloseConnection() {
 	}
 }
 
-func GetConnection() *gorm.DB {
+func Conn() *gorm.DB {
 	return conn
 }

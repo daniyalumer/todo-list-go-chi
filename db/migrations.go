@@ -17,7 +17,7 @@ var sqlFiles embed.FS
 const MigrationVersion = 1
 
 func RunMigrations() {
-	Db := GetConnection()
+	Db := Conn()
 
 	DB, err := Db.DB()
 	if err != nil {
@@ -42,7 +42,7 @@ func RunMigrations() {
 }
 
 func DownMigrations() {
-	Db := GetConnection()
+	Db := Conn()
 
 	db, err := Db.DB()
 	if err != nil {
