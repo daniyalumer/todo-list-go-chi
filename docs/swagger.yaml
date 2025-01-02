@@ -1,0 +1,239 @@
+definitions:
+  rq.Todo:
+    properties:
+      description:
+        type: string
+    type: object
+  rq.TodoUpdate:
+    properties:
+      completed:
+        type: boolean
+      description:
+        type: string
+    type: object
+  rq.User:
+    properties:
+      username:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a sample server for a todo list application.
+  title: Todo List API
+  version: "1.0"
+paths:
+  /api/home:
+    get:
+      consumes:
+      - application/json
+      description: Welcome message for the Todo app
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Welcome to Todo app!
+          schema:
+            type: string
+      summary: Home endpoint
+      tags:
+      - home
+  /api/todo:
+    get:
+      consumes:
+      - application/json
+      description: Get all todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/rq.Todo'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get all todos
+      tags:
+      - todos
+  /api/todo/{todo_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: todo_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted todo
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a todo
+      tags:
+      - todos
+    put:
+      consumes:
+      - application/json
+      description: Update an existing todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: todo_id
+        required: true
+        type: integer
+      - description: Todo Update
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/rq.TodoUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated todo
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update an existing todo
+      tags:
+      - todos
+  /api/todo/user/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: Create a new todo
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/rq.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created todo
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new todo
+      tags:
+      - todos
+  /api/user:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/rq.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/rq.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created user
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new user
+      tags:
+      - users
+  /api/user/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted user
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a user
+      tags:
+      - users
+swagger: "2.0"
